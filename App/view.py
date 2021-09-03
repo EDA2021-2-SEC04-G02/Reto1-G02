@@ -59,6 +59,29 @@ def cargarData(catalog):
     """
     controller.cargarData(catalog)
 
+
+def printCronoArtists(anioI,anioF,catalog):
+    """
+    Imprime el resultado de listar cronológicamente los artistas 
+    que nacieron en un rango de años
+    """
+    artistas = controller.ejecutarCronoArtists(anioI,anioF,catalog)
+    tamanio = artistas.size()
+    for i in range(0,3):
+        print("Nombre: "+artistas[i]["DisplayName"])
+        print("Año de nacimiento: "+artistas[i]["BeginDate"])
+        print("Nacionalidad: "+artistas[i]["Nationality"])
+        print("Género: "+artistas[i]["Gender"])
+    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
+    for i in range(-3,0):
+        print("Nombre: "+artistas[tamanio+i]["DisplayName"])
+        print("Año de nacimiento: "+artistas[tamanio+i]["BeginDate"])
+        print("Nacionalidad: "+artistas[tamanio+i]["Nationality"])
+        print("Género: "+artistas[tamanio+i]["Gender"])
+
+
+
+
 catalog = None
 
 """
@@ -96,6 +119,11 @@ while True:
             print("-ID: "+ultArtworks["ObjectID"])
             i-=1
     elif int(inputs[0]) == 2:
+        anioI = int(input("Ingrese el año incial del rango: "))
+        anioF = int(input("Ingrese el año final del rango: "))
+        printCronoArtists(anioI,anioF,catalog)
+
+    elif int(inputs[0]) == 3:
         pass
 
     else:

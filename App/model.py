@@ -71,3 +71,8 @@ def addArtwork(catalog, artwork):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+
+def cronoArtists(anioI,anioF,catalog):
+
+    
+    pass

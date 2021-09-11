@@ -46,11 +46,11 @@ def printMenu():
     print("0- Salir")
 
 
-def initCatalog():
+def initCatalog(tipoEstructura):
     """
     Inicializa el catalogo
     """
-    return controller.initCatalog()
+    return controller.initCatalog(tipoEstructura)
 
 
 def cargarData(catalog):
@@ -91,8 +91,14 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        tipoEstructura = "SINGLE_LINKED"
+        tipoLista = int(input("Seleccione el tipo de representación de lista en donde cargar el catálogo, 1 para \"Arreglo\" o 2 para \"Lista Encadenada\": "))
+        if tipoLista == 1:
+            tipoEstructura = "ARRAY_LIST"
+        elif tipoLista == 2:
+            tipoEstructura = "SINGLE_LINKED"
         print("Cargando información de los archivos ....")
-        catalog = initCatalog()
+        catalog = initCatalog(tipoEstructura)
         cargarData(catalog)
         sizeArtists = int(lt.size(catalog['artists']))
         sizeArtworks = int(lt.size(catalog['artworks']))

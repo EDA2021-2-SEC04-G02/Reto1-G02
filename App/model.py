@@ -37,7 +37,7 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog():
+def newCatalog(tipoEstructura):
     """
     Inicializa el catálogo de artistas. Crea una lista vacia para guardar
     todos los artistas, adicionalmente, crea una lista vacia para las obras. 
@@ -46,8 +46,8 @@ def newCatalog():
     catalog = {'artists': None,
                'artworks': None}
     
-    catalog['artworks'] = lt.newList()
-    catalog['artists'] = lt.newList()
+    catalog['artworks'] = lt.newList(datastructure=tipoEstructura)
+    catalog['artists'] = lt.newList(datastructure=tipoEstructura)
 
     return catalog
 

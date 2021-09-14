@@ -37,12 +37,13 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Listar cronológicamente a los artistas")
-    print("3- Listar cronológicamente las adquisiciones")
-    print("4- Clasificar las obras de un artista por técnica")
-    print("5- Clasificar las obras por la nacionalidad de sus creadores")
-    print("6- Transportar obras de un departamento")
-    print("7- Proponer una nueva exposición en el museo")
+    print("2- Ordenar obras de arte (laboratorio 4)")
+    print("3- Listar cronológicamente a los artistas")
+    print("4- Listar cronológicamente las adquisiciones")
+    print("5- Clasificar las obras de un artista por técnica")
+    print("6- Clasificar las obras por la nacionalidad de sus creadores")
+    print("7- Transportar obras de un departamento")
+    print("8- Proponer una nueva exposición en el museo")
     print("0- Salir")
 
 
@@ -78,6 +79,24 @@ def printCronoArtists(anioI,anioF,catalog):
         print("Año de nacimiento: "+artistas[tamanio+i]["BeginDate"])
         print("Nacionalidad: "+artistas[tamanio+i]["Nationality"])
         print("Género: "+artistas[tamanio+i]["Gender"])
+
+
+
+
+def printSortArtworks(ord_artworks, sample=10):
+    size = lt.size(ord_artworks)
+    if size > sample:
+        print("Las primeras ", sample, " obras ordenados son:")
+        i=1
+        while i <= sample:
+            artwork = lt.getElement(ord_artworks,i)
+            print("Título: "+artwork["Title"])
+            print("Fecha: "+artwork["Date"])
+            print("ID: "+artwork["ConstituentID"])
+            print("Fecha de adquisición: "+artwork["DateAcquired"])
+            i+=1
+
+
 
 
 
@@ -124,13 +143,29 @@ while True:
             print("-Título: "+ultArtworks["Title"])
             print("-ID: "+ultArtworks["ObjectID"])
             i-=1
+    
+    
+    
     elif int(inputs[0]) == 2:
+        size = int(input("Indique tamaño de la muestra: "))
+        if size > int(lt.size(catalog['artworks'])):
+            print("El tamaño de muestra no es válido")
+        else:
+            print("Indique el tipo de algoritmo de ordenamiento iterativo con el cuál ordenar el catálogo de las obras")
+            print("Insertion (1), Shell (2), QuickSort(3) o MergeSort (4)")
+            tipoOrden = int(input("Tipo: "))
+            result = controller.sortArtworks(catalog, size, tipoOrden)
+            print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
+                                            str(result[0]))
+            printSortArtworks(result[1])
+        
+    
+    elif int(inputs[0]) == 3:
         anioI = int(input("Ingrese el año incial del rango: "))
         anioF = int(input("Ingrese el año final del rango: "))
         printCronoArtists(anioI,anioF,catalog)
 
-    elif int(inputs[0]) == 3:
-        pass
+    
 
     else:
         sys.exit(0)

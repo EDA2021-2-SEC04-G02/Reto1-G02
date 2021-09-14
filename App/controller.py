@@ -53,7 +53,7 @@ def loadArtists(catalog):
     nacionalidad, genero, año de nacimiento, año de defunción, Wiki QID 
     y ULAN ID.
     """
-    artistsfile = cf.data_dir + 'Artists-utf8-small.csv'
+    artistsfile = cf.data_dir + 'Artists-utf8-30pct.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist)
@@ -65,7 +65,7 @@ def loadArtworks(catalog):
     artista(s), fecha de creación, medio, dimensiones, fecha de 
     adquisición del museo, entre otros.
     """
-    artworksfile = cf.data_dir + 'Artworks-utf8-small.csv'
+    artworksfile = cf.data_dir + 'Artworks-utf8-30pct.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
@@ -79,6 +79,10 @@ def ejecutarCronoArtists(anioI,anioF,catalog):
 
     return lista
 
-
+def sortArtworks(catalog, size, tipoOrden):
+    """
+    Ordena las obras por fecha de adquisición
+    """
+    return model.sortArtworks(catalog, size, tipoOrden)
 
 # Funciones de consulta sobre el catálogo

@@ -166,6 +166,7 @@ while True:
         printCronoArtists(anioI,anioF,catalog)
 
     
+    
 
     else:
         sys.exit(0)

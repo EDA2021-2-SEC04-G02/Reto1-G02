@@ -26,11 +26,8 @@
 
 
 import config as cf
-import time
+import datetime as dt
 from DISClib.ADT import list as lt
-from DISClib.Algorithms.Sorting import insertionsort as si
-from DISClib.Algorithms.Sorting import shellsort as sa
-from DISClib.Algorithms.Sorting import quicksort as sq
 from DISClib.Algorithms.Sorting import mergesort as sm
 assert cf
 
@@ -41,7 +38,7 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog(tipoEstructura):
+def newCatalog():
     """
     Inicializa el catálogo de artistas. Crea una lista vacia para guardar
     todos los artistas, adicionalmente, crea una lista vacia para las obras. 
@@ -50,8 +47,8 @@ def newCatalog(tipoEstructura):
     catalog = {'artists': None,
                'artworks': None}
     
-    catalog['artworks'] = lt.newList(datastructure=tipoEstructura)
-    catalog['artists'] = lt.newList(datastructure=tipoEstructura)
+    catalog['artworks'] = lt.newList(datastructure="ARRAY_LIST")
+    catalog['artists'] = lt.newList(datastructure="ARRAY_LIST")
 
     return catalog
 
@@ -74,6 +71,14 @@ def addArtwork(catalog, artwork):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
+
+def cmpArtistByBeginDate(artist1, artist2):
+    """
+    Devuelve verdadero (True) si el 'BeginDate' de artist1 es menor que el de artist2
+    """
+    return (str(artist1["BeginDate"])<str(artist2["BeginDate"])) and str(artist1["BeginDate"] != "0") and str(artist2["BeginDate"] != "0")
+
+
 def cmpArtworkByDateAcquired(artwork1, artwork2):
     """
     Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2
@@ -81,30 +86,18 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
     artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
     artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
     """
-    return (str(artwork1["DateAcquired"])<str(artwork2["DateAcquired"]))
+    return (str(artwork1)<str(artwork2)) and artwork1 != None and artwork2 != None
 
 # Funciones de ordenamiento
 
 
+def sortArtists(catalog):
+    sub_list = catalog['artists'].copy()
+    sorted_list = sm.sort(sub_list, cmpArtistByBeginDate)
+    return sorted_list
 
-def sortArtworks(catalog, size, tipoOrden):
-    sub_list = lt.subList(catalog['artworks'], 1, size)
-    sub_list = sub_list.copy()
-    start_time = time.process_time()
-    if tipoOrden == 1:
-        print("Insertion")
-        sorted_list = si.sort(sub_list, cmpArtworkByDateAcquired)
-    elif tipoOrden == 2:
-        print("Shell")
-        sorted_list = sa.sort(sub_list, cmpArtworkByDateAcquired)
-    elif tipoOrden == 3:
-        print("Quick")
-        sorted_list = sq.sort(sub_list, cmpArtworkByDateAcquired)
-    elif tipoOrden == 4:
-        print("Merge")
-        sorted_list = sm.sort(sub_list, cmpArtworkByDateAcquired)
-    else:
-        sorted_list = None
-    stop_time = time.process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    return elapsed_time_mseg, sorted_list
+
+def sortArtworks(catalog):
+    sub_list = catalog['artworks'].copy()
+    sorted_list = sm.sort(sub_list, cmpArtworkByDateAcquired)
+    return sorted_list

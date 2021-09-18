@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import datetime as dt
 from DISClib.ADT import list as lt
 assert cf
 
@@ -37,21 +38,20 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Ordenar obras de arte (laboratorio 4)")
-    print("3- Listar cronológicamente a los artistas")
-    print("4- Listar cronológicamente las adquisiciones")
-    print("5- Clasificar las obras de un artista por técnica")
-    print("6- Clasificar las obras por la nacionalidad de sus creadores")
-    print("7- Transportar obras de un departamento")
-    print("8- Proponer una nueva exposición en el museo")
+    print("2- Listar cronológicamente a los artistas")
+    print("3- Listar cronológicamente las adquisiciones")
+    print("4- Clasificar las obras de un artista por técnica")
+    print("5- Clasificar las obras por la nacionalidad de sus creadores")
+    print("6- Transportar obras de un departamento")
+    print("7- Proponer una nueva exposición en el museo")
     print("0- Salir")
 
 
-def initCatalog(tipoEstructura):
+def initCatalog():
     """
     Inicializa el catalogo
     """
-    return controller.initCatalog(tipoEstructura)
+    return controller.initCatalog()
 
 
 def cargarData(catalog):
@@ -61,40 +61,57 @@ def cargarData(catalog):
     controller.cargarData(catalog)
 
 
-def printCronoArtists(anioI,anioF,catalog):
+def printCronoArtists(artistas):
     """
     Imprime el resultado de listar cronológicamente los artistas 
     que nacieron en un rango de años
     """
-    artistas = controller.ejecutarCronoArtists(anioI,anioF,catalog)
-    tamanio = artistas.size()
+    tamanio = len(artistas)
+    print("Número total de artistas en dicho rango: "+str(tamanio)+"\n")
     for i in range(0,3):
-        print("Nombre: "+artistas[i]["DisplayName"])
-        print("Año de nacimiento: "+artistas[i]["BeginDate"])
-        print("Nacionalidad: "+artistas[i]["Nationality"])
-        print("Género: "+artistas[i]["Gender"])
-    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
+        print("Nombre: "+artistas[i]["Nombre"])
+        print("Año de nacimiento: "+artistas[i]["Nacimiento"])
+        print("Año de fallecimiento: "+artistas[i]["Fallecimiento"])
+        print("Nacionalidad: "+artistas[i]["Nacionalidad"])
+        print("Género: "+artistas[i]["Género"])
+        print("\n")
+    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
     for i in range(-3,0):
-        print("Nombre: "+artistas[tamanio+i]["DisplayName"])
-        print("Año de nacimiento: "+artistas[tamanio+i]["BeginDate"])
-        print("Nacionalidad: "+artistas[tamanio+i]["Nationality"])
-        print("Género: "+artistas[tamanio+i]["Gender"])
+        print("Nombre: "+artistas[tamanio+i]["Nombre"])
+        print("Año de nacimiento: "+artistas[tamanio+i]["Nacimiento"])
+        print("Año de fallecimiento: "+artistas[tamanio+i]["Fallecimiento"])
+        print("Nacionalidad: "+artistas[tamanio+i]["Nacionalidad"])
+        print("Género: "+artistas[tamanio+i]["Género"])
+        print("\n")
 
 
 
 
-def printSortArtworks(ord_artworks, sample=10):
-    size = lt.size(ord_artworks)
-    if size > sample:
-        print("Las primeras ", sample, " obras ordenados son:")
-        i=1
-        while i <= sample:
-            artwork = lt.getElement(ord_artworks,i)
-            print("Título: "+artwork["Title"])
-            print("Fecha: "+artwork["Date"])
-            print("ID: "+artwork["ConstituentID"])
-            print("Fecha de adquisición: "+artwork["DateAcquired"])
-            i+=1
+def printSortArtworks(ord_artworks):
+    """
+    Imprime el resultado de listar cronológicamente las obras 
+    adquiridas en un rango de fechas
+    """
+    tamanio = len(ord_artworks)
+    print("Número total de obras en el rango cronológico: "+str(tamanio)+"\n")
+    print("Número total de obras adquiridas por compra: "+str(ord_artworks[0]))
+    for i in range(0,3):
+        print("Título: "+ord_artworks[1][i]["Título"])
+        print("Artista(s): "+ord_artworks[1][i]["Artista(s)"])
+        print("Fecha: "+ord_artworks[1][i]["Fecha"])
+        print("Fecha de adquisición: "+ord_artworks[1][i]["Fecha de adquisición"])
+        print("Medio: "+ord_artworks[1][i]["Medio"])
+        print("Dimensiones: "+ord_artworks[1][i]["Dimensiones"])
+        print("\n")
+    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
+    for i in range(-3,0):
+        print("Título: "+ord_artworks[1][tamanio+i]["Título"])
+        print("Artista(s): "+ord_artworks[1][tamanio+i]["Artista(s)"])
+        print("Fecha: "+ord_artworks[1][tamanio+i]["Fecha"])
+        print("Fecha de adquisición: "+ord_artworks[1][tamanio+i]["Fecha de adquisición"])
+        print("Medio: "+ord_artworks[1][tamanio+i]["Medio"])
+        print("Dimensiones: "+ord_artworks[1][tamanio+i]["Dimensiones"])
+        print("\n")
 
 
 
@@ -110,20 +127,14 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        tipoEstructura = "SINGLE_LINKED"
-        tipoLista = int(input("Seleccione el tipo de representación de lista en donde cargar el catálogo, 1 para \"Arreglo\" o 2 para \"Lista Encadenada\": "))
-        if tipoLista == 1:
-            tipoEstructura = "ARRAY_LIST"
-        elif tipoLista == 2:
-            tipoEstructura = "SINGLE_LINKED"
         print("Cargando información de los archivos ....")
-        catalog = initCatalog(tipoEstructura)
+        catalog = initCatalog()
         cargarData(catalog)
         sizeArtists = int(lt.size(catalog['artists']))
         sizeArtworks = int(lt.size(catalog['artworks']))
-        print('Número de artistas cargados: ' + str(sizeArtists))
-        print('Número de obras cargadas: ' + str(sizeArtworks))
-        print('Ultimos tres artistas cargados: ')
+        print('\nNúmero de artistas cargados: ' + str(sizeArtists))
+        print('\nNúmero de obras cargadas: ' + str(sizeArtworks))
+        print('\nUltimos tres artistas cargados: ')
         """
         i funciona como iterador para obtener los últimos tres elementos de las listas
         """
@@ -131,7 +142,7 @@ while True:
         while i>=0:
             ultArtists = lt.getElement(catalog['artists'],(sizeArtists-i))
             print("-Nombre: "+ultArtists["DisplayName"])
-            print("-ID: "+ultArtists["ConstituentID"])
+            print("-ID: "+ultArtists["ConstituentID"]+"\n")
             i-=1
         print('Ultimas tres obras cargadas: ')
         """
@@ -141,29 +152,29 @@ while True:
         while i>=0:
             ultArtworks = lt.getElement(catalog['artworks'],(sizeArtworks-i))
             print("-Título: "+ultArtworks["Title"])
-            print("-ID: "+ultArtworks["ObjectID"])
+            print("-ID: "+ultArtworks["ObjectID"]+"\n")
             i-=1
     
     
     
     elif int(inputs[0]) == 2:
-        size = int(input("Indique tamaño de la muestra: "))
-        if size > int(lt.size(catalog['artworks'])):
-            print("El tamaño de muestra no es válido")
-        else:
-            print("Indique el tipo de algoritmo de ordenamiento iterativo con el cuál ordenar el catálogo de las obras")
-            print("Insertion (1), Shell (2), QuickSort(3) o MergeSort (4)")
-            tipoOrden = int(input("Tipo: "))
-            result = controller.sortArtworks(catalog, size, tipoOrden)
-            print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
-                                            str(result[0]))
-            printSortArtworks(result[1])
+
+        anioI = int(input("Ingrese el año incial del rango: "))
+        anioF = int(input("Ingrese el año final del rango: "))
+        result = controller.sortArtists(catalog,anioI,anioF)
+        printCronoArtists(result)
+
         
     
     elif int(inputs[0]) == 3:
+        diaI = int(input("Ingrese el día incial del rango: "))
+        mesI = int(input("Ingrese el mes incial del rango: "))
         anioI = int(input("Ingrese el año incial del rango: "))
+        diaF = int(input("Ingrese el día final del rango: "))
+        mesF = int(input("Ingrese el mes final del rango: "))
         anioF = int(input("Ingrese el año final del rango: "))
-        printCronoArtists(anioI,anioF,catalog)
+        result = controller.sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF)
+        printSortArtworks(result)
 
     
     

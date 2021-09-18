@@ -23,6 +23,7 @@
 import config as cf
 import model
 import csv
+import datetime as dt
 
 
 """
@@ -30,11 +31,11 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def initCatalog(tipoEstructura):
+def initCatalog():
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog(tipoEstructura)
+    catalog = model.newCatalog()
     return catalog
 
 # Funciones para la carga de datos
@@ -53,7 +54,7 @@ def loadArtists(catalog):
     nacionalidad, genero, año de nacimiento, año de defunción, Wiki QID 
     y ULAN ID.
     """
-    artistsfile = cf.data_dir + 'Artists-utf8-large.csv'
+    artistsfile = cf.data_dir + 'Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist)
@@ -65,7 +66,7 @@ def loadArtworks(catalog):
     artista(s), fecha de creación, medio, dimensiones, fecha de 
     adquisición del museo, entre otros.
     """
-    artworksfile = cf.data_dir + 'Artworks-utf8-large.csv'
+    artworksfile = cf.data_dir + 'Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
@@ -73,16 +74,48 @@ def loadArtworks(catalog):
 
 # Funciones de ordenamiento
 
-def ejecutarCronoArtists(anioI,anioF,catalog):
 
-    lista = model.cronoArtists(anioI,anioF,catalog)
 
+def sortArtists(catalog,anioI,anioF):
+    """
+    Ordena los artistas por fecha de nacimiento
+    """
+    lista = []
+    result = model.sortArtists(catalog)
+    for artist in result["elements"]:
+        if anioI <= int(artist["BeginDate"]) and anioF >= int(artist["BeginDate"]):
+            artists = {}
+            artists["Nombre"] = artist["DisplayName"]
+            artists["Nacimiento"] = artist["BeginDate"]
+            artists["Fallecimiento"] = artist["EndDate"]
+            artists["Nacionalidad"] = artist["Nationality"]
+            artists["Género"] = artist["Gender"]
+            lista = lista +[artists]
     return lista
 
-def sortArtworks(catalog, size, tipoOrden):
+
+def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
     """
     Ordena las obras por fecha de adquisición
     """
-    return model.sortArtworks(catalog, size, tipoOrden)
+    lista = []
+    result = model.sortArtworks(catalog)
+    fechaI = dt.datetime(anioI, mesI, diaI)
+    fechaF = dt.datetime(anioF, mesF, diaF)
+    obrasAdq = 0
+    for artwork in result["elements"]:
+        if str(fechaI) <= str(artwork["DateAcquired"]) and str(fechaF) >= str(artwork["DateAcquired"]):
+            artworks = {}
+            artworks["Título"] = artwork["Title"]
+            artworks["Artista(s)"] = ("---------")
+            artworks["Fecha"] = artwork["Date"]
+            artworks["Fecha de adquisición"] = artwork["DateAcquired"]
+            artworks["Medio"] = artwork["Medium"]
+            artworks["Dimensiones"] = artwork["Dimensions"]
+            lista = lista +[artworks]
+            if artwork["CreditLine"] == "Purchase":
+                obrasAdq += 1
+    return obrasAdq, model.sortArtworks(catalog)
+
 
 # Funciones de consulta sobre el catálogo

@@ -176,7 +176,10 @@ while True:
         result = controller.sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF)
         printSortArtworks(result)
 
-    
+
+
+    elif int(input[0]) == 5:
+        pass
     
 
     else:

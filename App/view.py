@@ -176,7 +176,7 @@ while True:
         result = controller.sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF)
         printSortArtworks(result)
 
-    
+
     
 
     else:

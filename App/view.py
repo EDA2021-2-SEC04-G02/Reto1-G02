@@ -92,9 +92,9 @@ def printSortArtworks(ord_artworks):
     Imprime el resultado de listar cronológicamente las obras 
     adquiridas en un rango de fechas
     """
-    tamanio = len(ord_artworks)
-    print("Número total de obras en el rango cronológico: "+str(tamanio)+"\n")
-    print("Número total de obras adquiridas por compra: "+str(ord_artworks[0]))
+    tamanio = len(ord_artworks[1])
+    print("\nNúmero total de obras en el rango cronológico: "+str(tamanio)+"\n")
+    print("Número total de obras adquiridas por compra: "+str(ord_artworks[0])+"\n")
     for i in range(0,3):
         print("Título: "+ord_artworks[1][i]["Título"])
         print("Artista(s): "+ord_artworks[1][i]["Artista(s)"])

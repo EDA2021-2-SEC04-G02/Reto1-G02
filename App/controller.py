@@ -105,17 +105,28 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
     obrasAdq = 0
     for artwork in result["elements"]:
         if str(fechaI) <= str(artwork["DateAcquired"]) and str(fechaF) >= str(artwork["DateAcquired"]):
+            
+            artistas = artwork["ConstituentID"][1:-1].split(",")
+            nombres = []
+            for id in artistas:
+                encontro = False
+                i = 0
+                while not encontro and i< len(catalog["artists"]["elements"]):
+                    if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
+                        nombres = nombres + [catalog["artists"]["elements"][i]["DisplayName"]]
+                        encontro = True
+                    i += 1
             artworks = {}
             artworks["Título"] = artwork["Title"]
-            artworks["Artista(s)"] = ("---------")
+            artworks["Artista(s)"] = str(nombres)[1:-1]
             artworks["Fecha"] = artwork["Date"]
             artworks["Fecha de adquisición"] = artwork["DateAcquired"]
             artworks["Medio"] = artwork["Medium"]
             artworks["Dimensiones"] = artwork["Dimensions"]
             lista = lista +[artworks]
-            if artwork["CreditLine"] == "Purchase":
+            if "Purchase" in artwork["CreditLine"] or "purchase" in artwork["CreditLine"]:
                 obrasAdq += 1
-    return obrasAdq, model.sortArtworks(catalog)
+    return obrasAdq, lista
 
 
 # Funciones de consulta sobre el catálogo

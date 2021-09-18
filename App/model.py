@@ -86,7 +86,7 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
     artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
     artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
     """
-    return (str(artwork1)<str(artwork2)) and artwork1 != None and artwork2 != None
+    return (str(artwork1["DateAcquired"])<str(artwork2["DateAcquired"])) and artwork1["DateAcquired"] != None and artwork2["DateAcquired"] != None
 
 # Funciones de ordenamiento
 

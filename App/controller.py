@@ -105,17 +105,8 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
     obrasAdq = 0
     for artwork in result["elements"]:
         if str(fechaI) <= str(artwork["DateAcquired"]) and str(fechaF) >= str(artwork["DateAcquired"]):
-            
             artistas = artwork["ConstituentID"][1:-1].split(",")
-            nombres = []
-            for id in artistas:
-                encontro = False
-                i = 0
-                while not encontro and i< len(catalog["artists"]["elements"]):
-                    if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
-                        nombres = nombres + [catalog["artists"]["elements"][i]["DisplayName"]]
-                        encontro = True
-                    i += 1
+            nombres = encontrarNombres(artistas, catalog)
             artworks = {}
             artworks["Título"] = artwork["Title"]
             artworks["Artista(s)"] = str(nombres)[1:-1]
@@ -131,9 +122,38 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
 
 # Funciones de consulta sobre el catálogo
 
+
+def encontrarNombres(artistas, catalog):
+    """
+    Encuentra nombres a partir de sus ID
+    """
+    nombres = []
+    for id in artistas:
+        encontro = False
+        i = 0
+        while not encontro and i< len(catalog["artists"]["elements"]):
+            if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
+                nombres = nombres + [catalog["artists"]["elements"][i]["DisplayName"]]
+                encontro = True
+            i += 1
+    return nombres
+
+
 def artworksNacionalidad(catalog):
     """
     Clasifica las obras por la nacionalidad de sus creadores.
     """
     nacionalidades = model.artworksNacionalidad(catalog)
-    return nacionalidades
+    infoObras = model.infoObrasNacionalidad(nacionalidades, catalog)
+    lista = []
+    for obra in infoObras:
+        nombres = encontrarNombres(obra[1], catalog)
+        artwork = {}
+        artwork["Título"] = obra[0]["Title"]
+        artwork["Artista(s)"] = str(nombres)[1:-1]
+        artwork["Fecha"] = obra[0]["Date"]
+        artwork["Fecha de adquisición"] = obra[0]["DateAcquired"]
+        artwork["Medio"] = obra[0]["Medium"]
+        artwork["Dimensiones"] = obra[0]["Dimensions"]
+        lista = lista + [artwork]
+    return nacionalidades, lista

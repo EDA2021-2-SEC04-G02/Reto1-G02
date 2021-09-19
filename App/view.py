@@ -95,6 +95,11 @@ def printSortArtworks(ord_artworks):
     tamanio = len(ord_artworks[1])
     print("\nNúmero total de obras en el rango cronológico: "+str(tamanio)+"\n")
     print("Número total de obras adquiridas por compra: "+str(ord_artworks[0])+"\n")
+    printArtworks(ord_artworks,tamanio)
+
+
+
+def printArtworks(ord_artworks, tamanio):
     for i in range(0,3):
         print("Título: "+ord_artworks[1][i]["Título"])
         print("Artista(s): "+ord_artworks[1][i]["Artista(s)"])
@@ -116,10 +121,14 @@ def printSortArtworks(ord_artworks):
 
 
 def printArtworksNacionalidad(result):
+    print("\nTOP 10 - Nacionalidades en el MOMA\n")
     print("Nacionalidad : Obras")
     for i in range(0,10): 
-        print(result["elements"][i][0]+" : "+str(result["elements"][i][1]))
-
+        print(result[0]["elements"][i][0]+" : "+str(result[0]["elements"][i][1]))
+    print("\nLa nacionalidad con más obras en el MOMA es: ",result[0]["elements"][0][0])
+    print("Sus primeras y últimas 3 obras son: \n")
+    tamanio = len(result[1])
+    printArtworks(result, tamanio)
 
 
 

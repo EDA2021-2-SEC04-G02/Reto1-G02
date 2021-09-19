@@ -82,21 +82,39 @@ def artworksNacionalidad(catalog):
                 if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
                     nacionalidad = catalog["artists"]["elements"][i]["Nationality"]
                     if nacionalidad == "":
-                        None
-                    elif nacionalidad not in nacionalidades:
+                        nacionalidad = "Nationality unknown"
+                    if nacionalidad not in nacionalidades:
                         nacionalidades[nacionalidad] = 1
                     else:
                         nacionalidades[nacionalidad] += 1
                     encontro = True
                 i += 1
-                    
+
     lstNacion = lt.newList(datastructure="ARRAY_LIST")
+
     for nacionalidad in nacionalidades:
         lt.addLast(lstNacion,[nacionalidad, nacionalidades[nacionalidad]])
     ordenada = sm.sort(lstNacion, cmpNacionalidad)
     return ordenada
-        
 
+
+
+def infoObrasNacionalidad(nacionalidades, catalog):
+    nacion = nacionalidades["elements"][0][0]
+    artworks = []
+    for artist in catalog["artists"]["elements"]:
+        encontro = False
+        i=0
+        if artist["Nationality"] == nacion:
+            while not encontro and i< len(catalog["artworks"]["elements"]):
+                artistas = catalog["artworks"]["elements"][i]["ConstituentID"][1:-1].split(",")
+                for artista in artistas:
+                    if str(artista).strip() == artist["ConstituentID"]:
+                        obra = [catalog["artworks"]["elements"][i],artistas]
+                        artworks = artworks + [obra]
+                        encontro = True
+                i += 1
+    return artworks
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -120,7 +138,7 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
 
 
 def cmpNacionalidad(nacionalidad1, nacionalidad2):
-    return nacionalidad1[1]>nacionalidad2[1] and nacionalidad1[0] != "" and nacionalidad2[0] != ""
+    return nacionalidad1[1]>nacionalidad2[1]
 
 
 

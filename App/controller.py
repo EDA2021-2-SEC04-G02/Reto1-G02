@@ -130,3 +130,10 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
 
 
 # Funciones de consulta sobre el catálogo
+
+def artworksNacionalidad(catalog):
+    """
+    Clasifica las obras por la nacionalidad de sus creadores.
+    """
+    nacionalidades = model.artworksNacionalidad(catalog)
+    return nacionalidades

@@ -53,6 +53,10 @@ def newCatalog():
     return catalog
 
 
+
+# Funciones para agregar informacion al catalogo
+
+
 def addArtist(catalog, artist):
     # Se adiciona la obra a la lista
     lt.addLast(catalog['artists'], artist)
@@ -62,12 +66,38 @@ def addArtwork(catalog, artwork):
     lt.addLast(catalog['artworks'], artwork)
 
 
-
-# Funciones para agregar informacion al catalogo
-
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+
+def artworksNacionalidad(catalog):
+    nacionalidades = {}
+    for artwork in catalog["artworks"]["elements"]:    
+        artistas = artwork["ConstituentID"][1:-1].split(",")
+        for id in artistas:
+            encontro = False
+            i = 0
+            while not encontro and i< len(catalog["artists"]["elements"]):
+                if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
+                    nacionalidad = catalog["artists"]["elements"][i]["Nationality"]
+                    if nacionalidad == "":
+                        None
+                    elif nacionalidad not in nacionalidades:
+                        nacionalidades[nacionalidad] = 1
+                    else:
+                        nacionalidades[nacionalidad] += 1
+                    encontro = True
+                i += 1
+                    
+    lstNacion = lt.newList(datastructure="ARRAY_LIST")
+    for nacionalidad in nacionalidades:
+        lt.addLast(lstNacion,[nacionalidad, nacionalidades[nacionalidad]])
+    ordenada = sm.sort(lstNacion, cmpNacionalidad)
+    return ordenada
+        
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -81,12 +111,18 @@ def cmpArtistByBeginDate(artist1, artist2):
 
 def cmpArtworkByDateAcquired(artwork1, artwork2):
     """
-    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2
+    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menor que el de artwork2
     Args:
     artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
     artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
     """
     return (str(artwork1["DateAcquired"])<str(artwork2["DateAcquired"])) and artwork1["DateAcquired"] != None and artwork2["DateAcquired"] != None
+
+
+def cmpNacionalidad(nacionalidad1, nacionalidad2):
+    return nacionalidad1[1]>nacionalidad2[1] and nacionalidad1[0] != "" and nacionalidad2[0] != ""
+
+
 
 # Funciones de ordenamiento
 
@@ -101,3 +137,4 @@ def sortArtworks(catalog):
     sub_list = catalog['artworks'].copy()
     sorted_list = sm.sort(sub_list, cmpArtworkByDateAcquired)
     return sorted_list
+

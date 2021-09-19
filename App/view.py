@@ -112,8 +112,13 @@ def printSortArtworks(ord_artworks):
         print("Medio: "+ord_artworks[1][tamanio+i]["Medio"])
         print("Dimensiones: "+ord_artworks[1][tamanio+i]["Dimensiones"])
         print("\n")
+        
 
 
+def printArtworksNacionalidad(result):
+    print("Nacionalidad : Obras")
+    for i in range(0,10): 
+        print(result["elements"][i][0]+" : "+str(result["elements"][i][1]))
 
 
 
@@ -180,10 +185,10 @@ while True:
 
 
 
-    elif int(input[0]) == 5:
-        
-        pass
-    
+    elif int(inputs[0]) == 5:
+
+        result = controller.artworksNacionalidad(catalog)
+        printArtworksNacionalidad(result)
 
     else:
         sys.exit(0)

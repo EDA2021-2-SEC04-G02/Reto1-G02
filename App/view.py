@@ -133,6 +133,7 @@ def printArtworksNacionalidad(result):
 
 
 
+
 catalog = None
 
 """

@@ -198,6 +198,7 @@ while True:
 
         result = controller.artworksNacionalidad(catalog)
         printArtworksNacionalidad(result)
+    
 
     else:
         sys.exit(0)

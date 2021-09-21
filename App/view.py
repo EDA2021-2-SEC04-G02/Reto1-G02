@@ -131,6 +131,34 @@ def printArtworksNacionalidad(result):
 
 
 
+def printNuevaExpo(result, catalog):
+    tamanio = len(result[2])
+    print("\nNúmero total de obras a exponer: ")
+    print(result[0])
+    print("\nÁrea aproximada utilizada en m²: ")
+    print(result[1])
+    print("\nPrimeras 5 y últimas 5 obras de la lista: \n")
+    for i in range(0,5):
+        nombres = controller.encontrarNombres(result[2]["elements"][i]["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+result[2]["elements"][i]["Title"])
+        print("Artista(s): "+str(nombres)[1:-1])
+        print("Fecha: "+result[2]["elements"][i]["Date"])
+        print("Clasificación: "+result[2]["elements"][i]["Classification"])
+        print("Medio: "+result[2]["elements"][i]["Medium"])
+        print("Dimensiones: "+result[2]["elements"][i]["Dimensions"])
+        print("\n")
+    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
+    for i in range(-5,0):
+        nombres = controller.encontrarNombres(result[2]["elements"][tamanio-i]["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+result[2]["elements"][tamanio-i]["Title"])
+        print("Artista(s): "+str(nombres)[1:-1])
+        print("Fecha: "+result[2]["elements"][tamanio-i]["Date"])
+        print("Clasificación: "+result[2]["elements"][tamanio-i]["Classification"])
+        print("Medio: "+result[2]["elements"][tamanio-i]["Medium"])
+        print("Dimensiones: "+result[2]["elements"][tamanio-i]["Dimensions"])
+        print("\n")
+    
+    
 
 
 catalog = None
@@ -200,6 +228,15 @@ while True:
         result = controller.artworksNacionalidad(catalog)
         printArtworksNacionalidad(result)
     
+
+
+    elif int(inputs[0]) == 7:
+        anioI = int(input("Ingrese el año incial del rango: "))
+        anioF = int(input("Ingrese el año final del rango: "))
+        area = float(input("Ingrese el área disponible en metros cuadrados: "))
+        result = controller.nuevaExpo(catalog,anioI,anioF,area)
+        printNuevaExpo(result, catalog)
+
 
     else:
         sys.exit(0)

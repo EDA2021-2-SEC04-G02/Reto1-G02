@@ -157,3 +157,10 @@ def artworksNacionalidad(catalog):
         artwork["Dimensiones"] = obra[0]["Dimensions"]
         lista = lista + [artwork]
     return nacionalidades, lista
+
+
+
+
+def nuevaExpo(catalog,anioI,anioF,area):
+    result = model.nuevaExpo(catalog,anioI,anioF,area)
+    return result

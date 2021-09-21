@@ -27,6 +27,7 @@
 
 import config as cf
 import datetime as dt
+import math
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import mergesort as sm
 assert cf
@@ -67,6 +68,8 @@ def addArtwork(catalog, artwork):
 
 
 # Funciones para creacion de datos
+
+
 
 # Funciones de consulta
 
@@ -115,6 +118,47 @@ def infoObrasNacionalidad(nacionalidades, catalog):
                         encontro = True
                 i += 1
     return artworks
+
+
+
+def nuevaExpo(catalog,anioI,anioF,areaMax):
+    cantidad = 0
+    area = 0
+    expo = lt.newList(datastructure="ARRAY_LIST")
+    for artwork in catalog["artworks"]["elements"]:
+        if artwork["Date"] != "" and anioI <= int(artwork["Date"]) and int(artwork["Date"]) <= anioF:
+            areaArtwork = 0
+            if artwork["Diameter (cm)"] != "":
+                areaArtwork = ((float(artwork["Diameter (cm)"])/2)**2)*math.pi
+            elif artwork["Depth (cm)"] == "":
+                lados = 0
+                l1 = 1
+                l2 = 1
+                l3 = 1
+                if artwork["Height (cm)"] != "":
+                    l1 = float(artwork["Height (cm)"])
+                    lados += 1
+                if artwork["Length (cm)"] != "":
+                    l2 = float(artwork["Length (cm)"])
+                    lados += 1
+                if artwork["Width (cm)"] != "":
+                    l3 = float(artwork["Width (cm)"])
+                    lados += 1
+                if lados == 2:
+                    areaArtwork = l1*l2*l3
+            if areaArtwork != 0:
+                area += areaArtwork
+                cantidad += 1
+                lt.addLast(expo, artwork)
+            print(area)
+        if area/10000 > areaMax:
+            area -= areaArtwork
+            cantidad -= 1
+            lt.removeLast(expo)
+            break
+    area = round(area/10000,3)
+    return cantidad, area, expo
+
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

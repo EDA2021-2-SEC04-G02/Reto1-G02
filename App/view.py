@@ -23,7 +23,6 @@
 import config as cf
 import sys
 import controller
-import datetime as dt
 from DISClib.ADT import list as lt
 assert cf
 

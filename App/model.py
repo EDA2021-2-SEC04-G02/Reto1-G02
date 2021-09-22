@@ -60,11 +60,15 @@ def newCatalog():
 
 
 def addArtist(catalog, artist):
-    # Se adiciona la obra a la lista
+    """
+    Adiciona un artista a la lista
+    """
     lt.addLast(catalog['artists'], artist)
     
 def addArtwork(catalog, artwork):
-    # Se adiciona la obra a la lista
+    """
+    Adiciona una obra a la lista
+    """
     lt.addLast(catalog['artworks'], artwork)
 
 
@@ -76,6 +80,9 @@ def addArtwork(catalog, artwork):
 
 
 def artworksNacionalidad(catalog):
+    """"
+    Req 4: Clasificar las obras por la nacionalidad de sus creadores.
+    """
     nacionalidades = {}
     for a in range(1,lt.size(catalog["artworks"])+1):
         artwork = lt.getElement(catalog["artworks"], a)
@@ -105,6 +112,9 @@ def artworksNacionalidad(catalog):
 
 
 def infoObrasNacionalidad(nacionalidades, catalog):
+    """"
+    Req 4: Clasificar las obras por la nacionalidad de sus creadores.
+    """
     nacion = lt.getElement(nacionalidades,1)[0]
     artworks = []
     for a in range(1,lt.size(catalog["artists"])+1):
@@ -124,64 +134,123 @@ def infoObrasNacionalidad(nacionalidades, catalog):
 
 
 
-
 def costoTransDept(catalog, dept):
-    cantidad = 0
-    precio = 0
-    peso = 0
-    for a in range(1,lt.size(catalog["artworks"])+1):
+    """
+    Req 5: Calcular el costo para transportar todas las obras de un departamento.
+    """
+    total = 0
+    costoFinal = 0
+    pesoFinal = 0
+    masCostosas = lt.newList(datastructure="ARRAY_LIST")
+    masAntiguas = lt.newList(datastructure="ARRAY_LIST")
+    completaCosto = False
+    completaAntiguedad = False
+    for a in range(1, lt.size(catalog["artworks"])+1):
         artwork = lt.getElement(catalog["artworks"],a)
-        if artwork["Department"] == dept:
-            precioObra = 0
-            lados = 0
-            l1 = 1
-            l2 = 1
-            l3 = 1
-            l4 = 1
-            if artwork["Weight (kg)"] != "" and  artwork["Weight (kg)"] != "0":
-                precioObra = 72*artwork["Weight (kg)"]
-            if artwork["Depth (cm)"] != "" and artwork["Depth (cm)"] != "0":
-                l1 = float(artwork["Depth (cm)"])/100
-                lados += 1
-            if artwork["Height (cm)"] != "" and artwork["Height (cm)"] != "0":
-                l2 = float(artwork["Height (cm)"])/100
-                lados += 1
-            if artwork["Length (cm)"] != "" and artwork["Length (cm)"] != "0":
-                l3 = float(artwork["Length (cm)"])/100
-                lados += 1
-            if artwork["Width (cm)"] != "" and ["Width (cm)"] != "0":
-                l4 = float(artwork["Width (cm)"])/100
-                lados += 1
-            if artwork["Diameter (cm)"] != "" and artwork["Diameter (cm)"] != "0" and lados <= 1:
-                areaDm = (((((float(artwork["Diameter (cm)"])/2)**2)*math.pi)/10000)*l1*l2*l3*l4)
-                if areaDm * 72 > precioObra:
-                    precioObra = areaDm*72
-            if artwork["Circumference (cm)"] != "" and artwork["Circumference (cm)"] != "0" and lados <= 1:
-                areaCrcn = ((((float(artwork["Circumference (cm)"])**2)/(4*math.pi))/10000)*l1*l2*l3*l4)
-                if areaCrcn * 72 > precioObra:
-                    precioObra = areaCrcn*72
-            if lados == 2 or lados == 3:
-                areaLados = (l1*l2*l3*l4)
-                if areaLados * 72 > precioObra:
-                    precioObra = areaLados*72
-            if precioObra > 0:
-                precio += precioObra
+        if dept == artwork["Department"]:
+            precioArtwork = precioobra(artwork)
+            costoFinal += precioArtwork[0]
+            total += 1
+            pesoFinal += precioArtwork[1]
+            if lt.size(masCostosas) < 5:
+                lt.addLast(masCostosas, [artwork,precioArtwork[0]])
+            elif lt.size(masCostosas) == 5 and not completaCosto:
+                sm.sort(masCostosas, cmpCosto)
+                completaCosto = True
             else:
-                precio += 48
-            cantidad += 1
-            if artwork["ObjectID"] == "23776":
-                print(artwork)
-                print(precioObra)
-    print(cantidad)
-    print(precio)
-    return None
+                i = 5
+                entro1 = False
+                while i > 0 and not entro1:
+                    if i == 1:
+                        lt.removeLast(masCostosas)
+                        lt.insertElement(masCostosas,[artwork,precioArtwork[0]], i)
+                        entro1 = True
+                    elif precioArtwork[0] <= lt.getElement(masCostosas, i)[1]:
+                        entro1 = True
+                    elif precioArtwork[0] < lt.getElement(masCostosas, i-1)[1]:
+                        lt.removeLast(masCostosas)
+                        lt.insertElement(masCostosas, [artwork,precioArtwork[0]], i)
+                        entro1 = True
+                    else:
+                        i -= 1
+            if lt.size(masAntiguas) < 5:
+                lt.addLast(masAntiguas, [artwork,precioArtwork[0]])
+            elif lt.size(masAntiguas) == 5 and not completaAntiguedad:
+                sm.sort(masAntiguas, cmpArtworkByDate)
+                completaAntiguedad = True
+            else:
+                i = 5
+                entro2 = False
+                if artwork["Date"] != "":
+                    while i > 0 and not entro2:
+                        if i == 1:
+                            lt.removeLast(masAntiguas)
+                            lt.insertElement(masAntiguas, [artwork,precioArtwork[0]], i)
+                            entro2 = True
+                        elif artwork["Date"] > lt.getElement(masAntiguas, i)[0]["Date"]:
+                            entro2 = True
+                        elif artwork["Date"] > lt.getElement(masAntiguas, i-1)[0]["Date"]:
+                            lt.removeLast(masAntiguas)
+                            lt.insertElement(masAntiguas, [artwork,precioArtwork[0]], i)
+                            entro2 = True
+                        else:
+                            i -= 1
+    costoFinal = round(costoFinal,3)
+    pesoFinal = round(pesoFinal,2)
+    return total, costoFinal, pesoFinal, masAntiguas, masCostosas
 
 
+
+
+def precioobra(artwork):
+    """"
+    Función auxiliar, encuentra el costo de una obra teniendo en cuenta sus dimensiones.
+    """
+    pesoObra = 0
+    precioObra = 0
+    lados = 0
+    l1 = 1
+    l2 = 1
+    l3 = 1
+    l4 = 1
+    if artwork["Weight (kg)"] != "" and  artwork["Weight (kg)"] != "0":
+        precioObra = 72*float(artwork["Weight (kg)"])
+        pesoObra += float(artwork["Weight (kg)"])
+    if artwork["Depth (cm)"] != "" and artwork["Depth (cm)"] != "0":
+        l1 = float(artwork["Depth (cm)"])/100
+        lados += 1
+    if artwork["Height (cm)"] != "" and artwork["Height (cm)"] != "0":
+        l2 = float(artwork["Height (cm)"])/100
+        lados += 1
+    if artwork["Length (cm)"] != "" and artwork["Length (cm)"] != "0":
+        l3 = float(artwork["Length (cm)"])/100
+        lados += 1
+    if artwork["Width (cm)"] != "" and ["Width (cm)"] != "0":
+        l4 = float(artwork["Width (cm)"])/100
+        lados += 1
+    if artwork["Diameter (cm)"] != "" and artwork["Diameter (cm)"] != "0" and lados <= 1:
+        areaDm = (((((float(artwork["Diameter (cm)"])/2)**2)*math.pi)/10000)*l1*l2*l3*l4)
+        if areaDm * 72 > precioObra:
+            precioObra = areaDm*72
+    if artwork["Circumference (cm)"] != "" and artwork["Circumference (cm)"] != "0" and lados <= 1:
+        areaCrcn = ((((float(artwork["Circumference (cm)"])**2)/(4*math.pi))/10000)*l1*l2*l3*l4)
+        if areaCrcn * 72 > precioObra:
+            precioObra = areaCrcn*72
+    if lados == 2 or lados == 3:
+        areaLados = (l1*l2*l3*l4)
+        if areaLados * 72 > precioObra:
+            precioObra = areaLados*72
+    if precioObra == 0:
+        precioObra = 48
+    return precioObra, pesoObra
 
 
 
 
 def nuevaExpo(catalog,anioI,anioF,areaMax):
+    """
+    Req 6: Propone una exposición de objetos planos, con base en el area ingeresada por el usuario y un rango de años.
+    """
     cantidad = 0
     area = 0
     expo = lt.newList(datastructure="ARRAY_LIST")
@@ -244,7 +313,28 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
 
 
 def cmpNacionalidad(nacionalidad1, nacionalidad2):
+    """
+    Devuelve verdadero (True) si nacionalidad1 es mayor a nacionalidad2.
+    """
     return nacionalidad1[1]>nacionalidad2[1]
+
+
+def cmpCosto(costo1, costo2):
+    """
+    Devuelve verdadero (True) si costo 1 es manor a costo2
+    """
+    return costo1[1] < costo2[1]
+
+
+def cmpArtworkByDate(artwork1, artwork2):
+    """
+    Devuelve verdadero (True) si el 'Date' de artwork1 es menor que el de artwork2
+    Args:
+    artwork1: informacion de la primera obra que incluye su valor 'Date'
+    artwork2: informacion de la segunda obra que incluye su valor 'Date'
+    """
+    return (str(artwork1[0]["Date"])<str(artwork2[0]["Date"])) and artwork1[0]["Date"] != None and artwork2[0]["Date"] != None
+
 
 
 
@@ -252,12 +342,18 @@ def cmpNacionalidad(nacionalidad1, nacionalidad2):
 
 
 def sortArtists(catalog):
+    """
+    Req 1: Ordenar artistas por fecha de nacimiento.
+    """
     sub_list = catalog['artists'].copy()
     sorted_list = sm.sort(sub_list, cmpArtistByBeginDate)
     return sorted_list
 
 
 def sortArtworks(catalog):
+    """
+    Req 2: Ordenar obras por fecha de adquisición.
+    """
     sub_list = catalog['artworks'].copy()
     sorted_list = sm.sort(sub_list, cmpArtworkByDateAcquired)
     return sorted_list

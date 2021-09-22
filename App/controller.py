@@ -169,6 +169,7 @@ def costoTransDept(catalog, dept):
 
 
 
+
 def nuevaExpo(catalog,anioI,anioF,area):
     result = model.nuevaExpo(catalog,anioI,anioF,area)
     return result

@@ -46,6 +46,7 @@ def printMenu():
     print("0- Salir")
 
 
+
 def initCatalog():
     """
     Inicializa el catalogo
@@ -119,6 +120,8 @@ def printArtworks(ord_artworks, tamanio):
         
 
 
+
+
 def printArtworksNacionalidad(result):
     print("\nTOP 10 - Nacionalidades en el MOMA\n")
     print("Nacionalidad : Obras")
@@ -128,6 +131,42 @@ def printArtworksNacionalidad(result):
     print("Sus primeras y últimas 3 obras son: \n")
     tamanio = len(result[1])
     printArtworks(result, tamanio)
+
+
+
+
+def printCostoTransDept(result):
+    print("\nTotal de obras para transportar: ")
+    print(result[0])
+    print("\nPrecio del servicio final estimado (USD): ")
+    print(result[1])
+    print("\nPeso final estimado (kg): ")
+    print(result[2])
+    print("\nLas 5 obras más antiguas a transportar: \n")
+    for i in range(1, lt.size(result[3])+1):
+        nombres = controller.encontrarNombres(lt.getElement(result[3],i)[0]["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+lt.getElement(result[3],i)[0]["Title"])
+        print("Artista(s): "+str(nombres)[1:-1])
+        print("Clasificación: "+lt.getElement(result[3],i)[0]["Classification"])
+        print("Fecha: "+lt.getElement(result[3],i)[0]["Date"])
+        print("Medio: "+lt.getElement(result[3],i)[0]["Medium"])
+        print("Dimensiones: "+lt.getElement(result[3],i)[0]["Dimensions"])
+        print("Costo asociado al transporte: "+str(round(lt.getElement(result[3],i)[1],3)))
+        print("\n")
+    print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
+    print("\nLas 5 obras más costosas a transportar: \n")
+    for i in range(1, lt.size(result[4])+1):
+        nombres = controller.encontrarNombres(lt.getElement(result[4],i)[0]["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+lt.getElement(result[4],i)[0]["Title"])
+        print("Artista(s): "+str(nombres)[1:-1])
+        print("Clasificación: "+lt.getElement(result[4],i)[0]["Classification"])
+        print("Fecha: "+lt.getElement(result[4],i)[0]["Date"])
+        print("Medio: "+lt.getElement(result[4],i)[0]["Medium"])
+        print("Dimensiones: "+lt.getElement(result[4],i)[0]["Dimensions"])
+        print("Costo asociado al transporte: "+str(round(lt.getElement(result[4],i)[1],3)))
+        print("\n")
+
+
 
 
 
@@ -234,6 +273,7 @@ while True:
     elif int(inputs[0]) == 6:
         dept = input("Ingrese el departamente del museo del que quiere conocer el costo de transporte: ")
         result = controller.costoTransDept(catalog, dept)
+        printCostoTransDept(result)
     
 
 

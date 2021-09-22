@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.DataStructures.arraylist import getElement
 import config as cf
 import datetime as dt
 import math
@@ -76,14 +77,15 @@ def addArtwork(catalog, artwork):
 
 def artworksNacionalidad(catalog):
     nacionalidades = {}
-    for artwork in catalog["artworks"]["elements"]:    
+    for a in range(1,lt.size(catalog["artworks"])+1):
+        artwork = lt.getElement(catalog["artworks"], a)
         artistas = artwork["ConstituentID"][1:-1].split(",")
         for id in artistas:
             encontro = False
             i = 0
-            while not encontro and i< len(catalog["artists"]["elements"]):
-                if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
-                    nacionalidad = catalog["artists"]["elements"][i]["Nationality"]
+            while not encontro and i < lt.size(catalog["artists"]):
+                if lt.getElement(catalog["artists"],i)["ConstituentID"] == str(id).strip():
+                    nacionalidad = lt.getElement(catalog["artists"],i)["Nationality"]
                     if nacionalidad == "":
                         nacionalidad = "Nationality unknown"
                     if nacionalidad not in nacionalidades:
@@ -103,17 +105,18 @@ def artworksNacionalidad(catalog):
 
 
 def infoObrasNacionalidad(nacionalidades, catalog):
-    nacion = nacionalidades["elements"][0][0]
+    nacion = lt.getElement(nacionalidades,1)[0]
     artworks = []
-    for artist in catalog["artists"]["elements"]:
+    for a in range(1,lt.size(catalog["artists"])+1):
+        artist = lt.getElement(catalog["artists"],a)
         encontro = False
         i=0
         if artist["Nationality"] == nacion:
-            while not encontro and i< len(catalog["artworks"]["elements"]):
-                artistas = catalog["artworks"]["elements"][i]["ConstituentID"][1:-1].split(",")
+            while not encontro and i < lt.size(catalog["artworks"]):
+                artistas = lt.getElement(catalog["artworks"],i)["ConstituentID"][1:-1].split(",")
                 for artista in artistas:
                     if str(artista).strip() == artist["ConstituentID"]:
-                        obra = [catalog["artworks"]["elements"][i],artistas]
+                        obra = [(lt.getElement(catalog["artworks"],i)),artistas]
                         artworks = artworks + [obra]
                         encontro = True
                 i += 1
@@ -121,15 +124,75 @@ def infoObrasNacionalidad(nacionalidades, catalog):
 
 
 
+
+def costoTransDept(catalog, dept):
+    cantidad = 0
+    precio = 0
+    peso = 0
+    for a in range(1,lt.size(catalog["artworks"])+1):
+        artwork = lt.getElement(catalog["artworks"],a)
+        if artwork["Department"] == dept:
+            precioObra = 0
+            lados = 0
+            l1 = 1
+            l2 = 1
+            l3 = 1
+            l4 = 1
+            if artwork["Weight (kg)"] != "" and  artwork["Weight (kg)"] != "0":
+                precioObra = 72*artwork["Weight (kg)"]
+            if artwork["Depth (cm)"] != "" and artwork["Depth (cm)"] != "0":
+                l1 = float(artwork["Depth (cm)"])/100
+                lados += 1
+            if artwork["Height (cm)"] != "" and artwork["Height (cm)"] != "0":
+                l2 = float(artwork["Height (cm)"])/100
+                lados += 1
+            if artwork["Length (cm)"] != "" and artwork["Length (cm)"] != "0":
+                l3 = float(artwork["Length (cm)"])/100
+                lados += 1
+            if artwork["Width (cm)"] != "" and ["Width (cm)"] != "0":
+                l4 = float(artwork["Width (cm)"])/100
+                lados += 1
+            if artwork["Diameter (cm)"] != "" and artwork["Diameter (cm)"] != "0" and lados <= 1:
+                areaDm = (((((float(artwork["Diameter (cm)"])/2)**2)*math.pi)/10000)*l1*l2*l3*l4)
+                if areaDm * 72 > precioObra:
+                    precioObra = areaDm*72
+            if artwork["Circumference (cm)"] != "" and artwork["Circumference (cm)"] != "0" and lados <= 1:
+                areaCrcn = ((((float(artwork["Circumference (cm)"])**2)/(4*math.pi))/10000)*l1*l2*l3*l4)
+                if areaCrcn * 72 > precioObra:
+                    precioObra = areaCrcn*72
+            if lados == 2 or lados == 3:
+                areaLados = (l1*l2*l3*l4)
+                if areaLados * 72 > precioObra:
+                    precioObra = areaLados*72
+            if precioObra > 0:
+                precio += precioObra
+            else:
+                precio += 48
+            cantidad += 1
+            if artwork["ObjectID"] == "23776":
+                print(artwork)
+                print(precioObra)
+    print(cantidad)
+    print(precio)
+    return None
+
+
+
+
+
+
 def nuevaExpo(catalog,anioI,anioF,areaMax):
     cantidad = 0
     area = 0
     expo = lt.newList(datastructure="ARRAY_LIST")
-    for artwork in catalog["artworks"]["elements"]:
+    for a in range(1, lt.size(catalog["artworks"])+1):
+        artwork = lt.getElement(catalog["artworks"],a)
         if artwork["Date"] != "" and anioI <= int(artwork["Date"]) and int(artwork["Date"]) <= anioF:
             areaArtwork = 0
             if artwork["Diameter (cm)"] != "":
                 areaArtwork = ((float(artwork["Diameter (cm)"])/2)**2)*math.pi
+            elif artwork["Circumference (cm)"] != "":
+                areaArtwork = (float(artwork["Circumference (cm)"])**2)/(4*math.pi)
             elif artwork["Depth (cm)"] == "":
                 lados = 0
                 l1 = 1
@@ -150,7 +213,6 @@ def nuevaExpo(catalog,anioI,anioF,areaMax):
                 area += areaArtwork
                 cantidad += 1
                 lt.addLast(expo, artwork)
-            print(area)
         if area/10000 > areaMax:
             area -= areaArtwork
             cantidad -= 1

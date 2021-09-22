@@ -66,7 +66,7 @@ def printCronoArtists(artistas):
     que nacieron en un rango de años
     """
     tamanio = len(artistas)
-    print("Número total de artistas en dicho rango: "+str(tamanio)+"\n")
+    print("\nNúmero total de artistas en dicho rango: "+str(tamanio)+"\n")
     for i in range(0,3):
         print("Nombre: "+artistas[i]["Nombre"])
         print("Año de nacimiento: "+artistas[i]["Nacimiento"])
@@ -122,9 +122,9 @@ def printArtworks(ord_artworks, tamanio):
 def printArtworksNacionalidad(result):
     print("\nTOP 10 - Nacionalidades en el MOMA\n")
     print("Nacionalidad : Obras")
-    for i in range(0,10): 
-        print(result[0]["elements"][i][0]+" : "+str(result[0]["elements"][i][1]))
-    print("\nLa nacionalidad con más obras en el MOMA es: ",result[0]["elements"][0][0])
+    for i in range(1,11): 
+        print(lt.getElement(result[0],i)[0]+" : "+str(lt.getElement(result[0],i)[1]))
+    print("\nLa nacionalidad con más obras en el MOMA es: ",lt.getElement(result[0],1)[0])
     print("Sus primeras y últimas 3 obras son: \n")
     tamanio = len(result[1])
     printArtworks(result, tamanio)
@@ -138,24 +138,24 @@ def printNuevaExpo(result, catalog):
     print("\nÁrea aproximada utilizada en m²: ")
     print(result[1])
     print("\nPrimeras 5 y últimas 5 obras de la lista: \n")
-    for i in range(0,5):
-        nombres = controller.encontrarNombres(result[2]["elements"][i]["ConstituentID"][1:-1].split(","),catalog)
-        print("Título: "+result[2]["elements"][i]["Title"])
+    for i in range(1,6):
+        nombres = controller.encontrarNombres(lt.getElement(result[2],i)["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+lt.getElement(result[2],i)["Title"])
         print("Artista(s): "+str(nombres)[1:-1])
-        print("Fecha: "+result[2]["elements"][i]["Date"])
-        print("Clasificación: "+result[2]["elements"][i]["Classification"])
-        print("Medio: "+result[2]["elements"][i]["Medium"])
-        print("Dimensiones: "+result[2]["elements"][i]["Dimensions"])
+        print("Fecha: "+lt.getElement(result[2],i)["Date"])
+        print("Clasificación: "+lt.getElement(result[2],i)["Classification"])
+        print("Medio: "+lt.getElement(result[2],i)["Medium"])
+        print("Dimensiones: "+lt.getElement(result[2],i)["Dimensions"])
         print("\n")
     print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
-    for i in range(-5,0):
-        nombres = controller.encontrarNombres(result[2]["elements"][tamanio-i]["ConstituentID"][1:-1].split(","),catalog)
-        print("Título: "+result[2]["elements"][tamanio-i]["Title"])
+    for i in range(-4,1):
+        nombres = controller.encontrarNombres(lt.getElement(result[2],tamanio-i)["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+lt.getElement(result[2],tamanio-i)["Title"])
         print("Artista(s): "+str(nombres)[1:-1])
-        print("Fecha: "+result[2]["elements"][tamanio-i]["Date"])
-        print("Clasificación: "+result[2]["elements"][tamanio-i]["Classification"])
-        print("Medio: "+result[2]["elements"][tamanio-i]["Medium"])
-        print("Dimensiones: "+result[2]["elements"][tamanio-i]["Dimensions"])
+        print("Fecha: "+lt.getElement(result[2],tamanio-i)["Date"])
+        print("Clasificación: "+lt.getElement(result[2],tamanio-i)["Classification"])
+        print("Medio: "+lt.getElement(result[2],tamanio-i)["Medium"])
+        print("Dimensiones: "+lt.getElement(result[2],tamanio-i)["Dimensions"])
         print("\n")
     
     
@@ -177,7 +177,7 @@ while True:
         sizeArtworks = int(lt.size(catalog['artworks']))
         print('\nNúmero de artistas cargados: ' + str(sizeArtists))
         print('\nNúmero de obras cargadas: ' + str(sizeArtworks))
-        print('\nUltimos tres artistas cargados: ')
+        print('\nÚltimos tres artistas cargados: \n')
         """
         i funciona como iterador para obtener los últimos tres elementos de las listas
         """
@@ -187,7 +187,7 @@ while True:
             print("-Nombre: "+ultArtists["DisplayName"])
             print("-ID: "+ultArtists["ConstituentID"]+"\n")
             i-=1
-        print('Ultimas tres obras cargadas: ')
+        print('Últimas tres obras cargadas: \n')
         """
         i funciona como iterador para obtener los últimos tres elementos de las listas
         """
@@ -227,7 +227,15 @@ while True:
 
         result = controller.artworksNacionalidad(catalog)
         printArtworksNacionalidad(result)
+
+
+
+
+    elif int(inputs[0]) == 6:
+        dept = input("Ingrese el departamente del museo del que quiere conocer el costo de transporte: ")
+        result = controller.costoTransDept(catalog, dept)
     
+
 
 
     elif int(inputs[0]) == 7:
@@ -238,6 +246,8 @@ while True:
         printNuevaExpo(result, catalog)
 
 
+
     else:
+        print("Usted ha salido de la aplicación.")
         sys.exit(0)
 sys.exit(0)

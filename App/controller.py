@@ -24,6 +24,7 @@ import config as cf
 import model
 import csv
 import datetime as dt
+from DISClib.ADT import list as lt
 
 
 """
@@ -82,7 +83,8 @@ def sortArtists(catalog,anioI,anioF):
     """
     lista = []
     result = model.sortArtists(catalog)
-    for artist in result["elements"]:
+    for a in range(1,lt.size(result)+1):
+        artist = lt.getElement(result,a)
         if anioI <= int(artist["BeginDate"]) and anioF >= int(artist["BeginDate"]):
             artists = {}
             artists["Nombre"] = artist["DisplayName"]
@@ -103,7 +105,8 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
     fechaI = dt.datetime(anioI, mesI, diaI)
     fechaF = dt.datetime(anioF, mesF, diaF)
     obrasAdq = 0
-    for artwork in result["elements"]:
+    for a in range(1,lt.size(result)+1):
+        artwork = lt.getElement(result,a)
         if str(fechaI) <= str(artwork["DateAcquired"]) and str(fechaF) >= str(artwork["DateAcquired"]):
             artistas = artwork["ConstituentID"][1:-1].split(",")
             nombres = encontrarNombres(artistas, catalog)
@@ -131,9 +134,9 @@ def encontrarNombres(artistas, catalog):
     for id in artistas:
         encontro = False
         i = 0
-        while not encontro and i< len(catalog["artists"]["elements"]):
-            if catalog["artists"]["elements"][i]["ConstituentID"] == str(id).strip():
-                nombres = nombres + [catalog["artists"]["elements"][i]["DisplayName"]]
+        while not encontro and i< lt.size(catalog["artists"]):
+            if lt.getElement(catalog["artists"],i)["ConstituentID"] == str(id).strip():
+                nombres = nombres + [lt.getElement(catalog["artists"],i)["DisplayName"]]
                 encontro = True
             i += 1
     return nombres
@@ -158,6 +161,11 @@ def artworksNacionalidad(catalog):
         lista = lista + [artwork]
     return nacionalidades, lista
 
+
+
+def costoTransDept(catalog, dept):
+    result = model.costoTransDept(catalog, dept)
+    return result
 
 
 

@@ -24,6 +24,7 @@ import config as cf
 import model
 import csv
 import datetime as dt
+import time
 from DISClib.ADT import list as lt
 
 
@@ -81,6 +82,7 @@ def sortArtists(catalog,anioI,anioF):
     """
     Ordena los artistas por fecha de nacimiento
     """
+    start_time = time.process_time()
     lista = []
     result = model.sortArtists(catalog)
     for a in range(1,lt.size(result)+1):
@@ -93,6 +95,9 @@ def sortArtists(catalog,anioI,anioF):
             artists["Nacionalidad"] = artist["Nationality"]
             artists["Género"] = artist["Gender"]
             lista = lista +[artists]
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return lista
 
 
@@ -100,6 +105,7 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
     """
     Ordena las obras por fecha de adquisición
     """
+    start_time = time.process_time()
     lista = []
     result = model.sortArtworks(catalog)
     fechaI = dt.datetime(anioI, mesI, diaI)
@@ -120,6 +126,9 @@ def sortArtworks(catalog, anioI, mesI, diaI, anioF, mesF, diaF):
             lista = lista +[artworks]
             if "Purchase" in artwork["CreditLine"] or "purchase" in artwork["CreditLine"]:
                 obrasAdq += 1
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return obrasAdq, lista
 
 
@@ -146,6 +155,7 @@ def artworksNacionalidad(catalog):
     """
     Clasifica las obras por la nacionalidad de sus creadores.
     """
+    start_time = time.process_time()
     nacionalidades = model.artworksNacionalidad(catalog)
     infoObras = model.infoObrasNacionalidad(nacionalidades, catalog)
     lista = []
@@ -159,17 +169,28 @@ def artworksNacionalidad(catalog):
         artwork["Medio"] = obra[0]["Medium"]
         artwork["Dimensiones"] = obra[0]["Dimensions"]
         lista = lista + [artwork]
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return nacionalidades, lista
 
 
 
 def costoTransDept(catalog, dept):
+    start_time = time.process_time()
     result = model.costoTransDept(catalog, dept)
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return result
 
 
 
 
 def nuevaExpo(catalog,anioI,anioF,area):
+    start_time = time.process_time()
     result = model.nuevaExpo(catalog,anioI,anioF,area)
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
     return result

@@ -171,7 +171,7 @@ def printCostoTransDept(result):
 
 
 def printNuevaExpo(result, catalog):
-    tamanio = len(result[2])
+    tamanio = lt.size(result[2])
     print("\nNúmero total de obras a exponer: ")
     print(result[0])
     print("\nÁrea aproximada utilizada en m²: ")
@@ -188,13 +188,13 @@ def printNuevaExpo(result, catalog):
         print("\n")
     print(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n")
     for i in range(-4,1):
-        nombres = controller.encontrarNombres(lt.getElement(result[2],tamanio-i)["ConstituentID"][1:-1].split(","),catalog)
-        print("Título: "+lt.getElement(result[2],tamanio-i)["Title"])
+        nombres = controller.encontrarNombres(lt.getElement(result[2],tamanio+i)["ConstituentID"][1:-1].split(","),catalog)
+        print("Título: "+lt.getElement(result[2],tamanio+i)["Title"])
         print("Artista(s): "+str(nombres)[1:-1])
-        print("Fecha: "+lt.getElement(result[2],tamanio-i)["Date"])
-        print("Clasificación: "+lt.getElement(result[2],tamanio-i)["Classification"])
-        print("Medio: "+lt.getElement(result[2],tamanio-i)["Medium"])
-        print("Dimensiones: "+lt.getElement(result[2],tamanio-i)["Dimensions"])
+        print("Fecha: "+lt.getElement(result[2],tamanio+i)["Date"])
+        print("Clasificación: "+lt.getElement(result[2],tamanio+i)["Classification"])
+        print("Medio: "+lt.getElement(result[2],tamanio+i)["Medium"])
+        print("Dimensiones: "+lt.getElement(result[2],tamanio+i)["Dimensions"])
         print("\n")
     
     
